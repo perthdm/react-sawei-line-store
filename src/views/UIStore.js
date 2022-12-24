@@ -11,6 +11,8 @@ const PLUS = "plus";
 
 const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
   const [amount, setAmount] = useState(1);
+  const [taste, setTaste] = useState("original");
+  const [info, setInfo] = useState();
 
   const handleChangeAmount = (type) => {
     let nextAmount = amount;
@@ -27,6 +29,11 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
     }
   };
 
+  const handleBeforeSubmit = () => {
+    let data = { _id: item?._id, name: item?.name, info, amount, taste };
+    console.log(data);
+  };
+
   return (
     <Modal
       title={item?.name}
@@ -36,7 +43,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
         <Button
           key="submit"
           type="primary"
-          onClick={onSubmit}
+          onClick={handleBeforeSubmit}
           style={{
             width: "100%",
             height: "40px",
@@ -59,15 +66,19 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           (เลือก 1 ชนิด)
         </span>
       </h4>
-      <Radio.Group onChange={() => {}}>
+      <Radio.Group
+        onChange={({ target: { value } }) => {
+          setTaste(value);
+        }}
+      >
         <Space direction="vertical">
-          <Radio value={1} className="item-list-custom">
+          <Radio defaultChecked={"original"} className="item-list-custom">
             <Row style={{ width: "100%" }}>
               <Col span={20}>ธรรมดา</Col>
               <Col span={4}>฿10</Col>
             </Row>
           </Radio>
-          <Radio value={2} className="item-list-custom">
+          <Radio value={"spicy"} className="item-list-custom">
             <Row style={{ width: "100%" }}>
               <Col span={20}>หม่าล่า</Col>
               <Col span={4}>฿12</Col>
@@ -92,7 +103,8 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
         showCount
         maxLength={100}
         style={{ height: 100, resize: "none" }}
-        onChange={() => {}}
+        onChange={({ target: { value } }) => setInfo(value)}
+        value={info}
       />
 
       <h4>
