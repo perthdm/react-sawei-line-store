@@ -1,153 +1,52 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Row, Col } from "antd";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faStore,
-  faClock,
-  faAddressBook,
-  faCartShopping
-} from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useState } from "react";
+import { Button } from "antd";
 
 // base-color #FF884B
 // inactive #818c9d
 
-const Footer = ({ active, setActive }) => {
+const Footer = ({ itemCart, onCheckout }) => {
+  const [total, setTotal] = useState({});
+
+  useEffect(() => {
+    let price = 0;
+    let amount = 0;
+    itemCart.map((item) => {
+      price += item?.total;
+      amount += item?.amount;
+    });
+    setTotal({ amount, price });
+  }, [itemCart]);
+
   return (
     <div
       style={{
-        minHeight: "7vh",
+        height: "70px",
         color: "#FFD384",
         position: "fixed",
         width: "100%",
         bottom: 0,
         zIndex: 100,
-        background: "transparent",
+        background: "white",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
       }}
     >
-      <Row
+      <Button
         style={{
-          height: "7vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center"
+          width: "90%",
+          textAlign: "left",
+          backgroundColor: "#83633f",
+          color: "white",
+          height: "45px"
         }}
+        onClick={onCheckout}
       >
-        <Col
-          span={6}
-          onClick={() => setActive(1)}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          <div
-            style={
-              active === 1
-                ? {
-                    backgroundColor: "#FFD384",
-                    width: "50px",
-                    height: "50px",
-                    color: "white",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: "50%"
-                  }
-                : {}
-            }
-          >
-            <FontAwesomeIcon icon={faStore} size="xl" />
-          </div>
-        </Col>
-        <Col
-          span={6}
-          onClick={() => setActive(2)}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          <div
-            style={
-              active === 2
-                ? {
-                    backgroundColor: "#FFD384",
-                    width: "50px",
-                    height: "50px",
-                    color: "white",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: "50%"
-                  }
-                : {}
-            }
-          >
-            <FontAwesomeIcon icon={faCartShopping} size="xl" />
-          </div>
-        </Col>
-        <Col
-          span={6}
-          onClick={() => setActive(3)}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          {" "}
-          <div
-            style={
-              active === 3
-                ? {
-                    backgroundColor: "#FFD384",
-                    width: "50px",
-                    height: "50px",
-                    color: "white",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: "50%"
-                  }
-                : {}
-            }
-          >
-            <FontAwesomeIcon icon={faClock} size="xl" />
-          </div>
-        </Col>
-        <Col
-          span={6}
-          onClick={() => setActive(4)}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          {" "}
-          <div
-            style={
-              active === 4
-                ? {
-                    backgroundColor: "#FFD384",
-                    width: "50px",
-                    height: "50px",
-                    color: "white",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: "50%"
-                  }
-                : {}
-            }
-          >
-            <FontAwesomeIcon icon={faAddressBook} size="xl" />
-          </div>
-        </Col>
-      </Row>
+        ตระกร้าสินค้า - {total?.amount} ชิ้น{" "}
+        <div style={{ position: "absolute", right: 15, top: 11 }}>
+          ฿{total?.price}
+        </div>
+      </Button>
     </div>
   );
 };
