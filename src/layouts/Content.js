@@ -5,7 +5,6 @@ import { Card, Row, Col } from "antd";
 import UIStore from "views/UIStore";
 import UICart from "../views/UICart";
 import UIHistory from "../views/UIHistory";
-import UIAddress from "../views/UIAddress";
 
 const Content = ({ active }) => {
   const renderContent = () => {
@@ -14,10 +13,8 @@ const Content = ({ active }) => {
         return <UIStore />;
       case 2:
         return <UICart />;
-      case 3:
-        return <UIHistory />;
       default:
-        return <UIAddress />;
+        return <UIHistory />;
     }
   };
 
