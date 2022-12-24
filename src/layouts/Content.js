@@ -1,33 +1,33 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Card, Row, Col } from "antd";
 
 import UIStore from "views/UIStore";
 import UICart from "../views/UICart";
-import UIHistory from "../views/UIHistory";
+import Footer from "../layouts/Footer";
 
-const Content = ({ active }) => {
-  const renderContent = () => {
-    switch (active) {
-      case 1:
-        return <UIStore />;
-      case 2:
-        return <UICart />;
-      default:
-        return <UIHistory />;
-    }
-  };
+const Content = ({ step, onCheckout }) => {
+  const [itemCart, setItemCart] = useState([]);
 
   return (
-    <div
-      style={{
-        maxHeight: "90vh",
-        overflowY: "scroll",
-        padding: "1rem 0.5rem 0rem 0.5rem"
-      }}
-    >
-      {renderContent()}
-    </div>
+    <>
+      <div
+        style={{
+          maxHeight: "90vh",
+          overflowY: "scroll",
+          padding: "1rem 0.5rem 0rem 0.5rem"
+        }}
+      >
+        {step === 0 ? (
+          <UIStore itemCart={itemCart} setItemCart={setItemCart} />
+        ) : (
+          <UICart itemCart={itemCart} setItemCart={setItemCart} />
+        )}
+      </div>
+
+      {step === 0 && itemCart.length > 0 && (
+        <Footer itemCart={itemCart} onCheckout={onCheckout} />
+      )}
+    </>
   );
 };
 

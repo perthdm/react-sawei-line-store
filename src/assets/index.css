@@ -44,5 +44,9 @@ code {
   font-size: 16px;
   border-radius: 5px;
   vertical-align: -3px;
-
 }
+
+/* .ant-radio-inner {
+  border-color: #83633f !important;
+  background-color: #83633f !important;
+} */

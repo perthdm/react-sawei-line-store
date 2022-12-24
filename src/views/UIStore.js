@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Card, Row, Col, Modal, Button, List, Radio, Space, Input } from "antd";
 import axios from "axios";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import SaWeiService from "services/SaWeiService";
 
 const { Meta } = Card;
 const { TextArea } = Input;
@@ -11,8 +12,9 @@ const PLUS = "plus";
 
 const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
   const [amount, setAmount] = useState(1);
-  const [taste, setTaste] = useState("original");
+  const [option, setOption] = useState();
   const [info, setInfo] = useState();
+  const [error, setError] = useState();
 
   const handleChangeAmount = (type) => {
     let nextAmount = amount;
@@ -30,8 +32,17 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
   };
 
   const handleBeforeSubmit = () => {
-    let data = { _id: item?._id, name: item?.name, info, amount, taste };
-    console.log(data);
+    let data = { _id: item?._id, name: item?.name, info, amount, option };
+    if (item?.option.length > 0) {
+      if (!option) {
+        return setError("กรุณาเลือกชนิดของสินค้า");
+      }
+      data["total"] = amount * option?.price;
+    } else {
+      data["total"] = amount * item?.price;
+    }
+
+    onSubmit(data);
   };
 
   return (
@@ -47,46 +58,55 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           style={{
             width: "100%",
             height: "40px",
-            backgroundColor: "#5031cc"
+            backgroundColor: "#83633f"
           }}
         >
           เพิ่มลงตระกร้า
         </Button>
       ]}
     >
-      <h4>
-        รสชาติ{" "}
-        <span
-          style={{
-            fontSize: "14px",
-            color: "#00000073",
-            fontWeight: "normal"
-          }}
-        >
-          (เลือก 1 ชนิด)
-        </span>
-      </h4>
-      <Radio.Group
-        onChange={({ target: { value } }) => {
-          setTaste(value);
-        }}
-      >
-        <Space direction="vertical">
-          <Radio defaultChecked={"original"} className="item-list-custom">
-            <Row style={{ width: "100%" }}>
-              <Col span={20}>ธรรมดา</Col>
-              <Col span={4}>฿10</Col>
-            </Row>
-          </Radio>
-          <Radio value={"spicy"} className="item-list-custom">
-            <Row style={{ width: "100%" }}>
-              <Col span={20}>หม่าล่า</Col>
-              <Col span={4}>฿12</Col>
-            </Row>
-          </Radio>
-        </Space>
-      </Radio.Group>
-
+      {item?.option && (
+        <>
+          <h4>
+            รสชาติ{" "}
+            <span
+              style={{
+                fontSize: "14px",
+                color: "#00000073",
+                fontWeight: "normal"
+              }}
+            >
+              (เลือก 1 ชนิด)
+            </span>
+          </h4>
+          <Radio.Group
+            onChange={({ target: { value } }) => {
+              setError("");
+              setOption(value);
+            }}
+          >
+            <Space direction="vertical">
+              {item?.option.map((optionItem) => {
+                return (
+                  <Radio
+                    value={optionItem}
+                    className="item-list-custom"
+                    key={optionItem?._id}
+                  >
+                    <Row style={{ width: "100%" }}>
+                      <Col span={20}>{optionItem?.name}</Col>
+                      <Col span={4}>฿{optionItem?.price}</Col>
+                    </Row>
+                  </Radio>
+                );
+              })}
+            </Space>
+          </Radio.Group>
+          {error && (
+            <div style={{ color: "red", marginTop: "5px" }}>** {error}</div>
+          )}
+        </>
+      )}
       <h4>
         ข้อความถึงผู้ขาย{" "}
         <span
@@ -124,7 +144,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           <Button
             className="sign-button"
             name="minus"
-            icon={<MinusOutlined style={{ color: "#5031cc" }} />}
+            icon={<MinusOutlined style={{ color: "#83633f" }} />}
             onClick={() => handleChangeAmount("minus")}
           />
         </Col>
@@ -142,7 +162,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           <Button
             className="sign-button"
             name="plus"
-            icon={<PlusOutlined style={{ color: "#5031cc" }} />}
+            icon={<PlusOutlined style={{ color: "#83633f" }} />}
             onClick={() => handleChangeAmount("plus")}
           />
         </Col>
@@ -151,15 +171,14 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
   );
 };
 
-const UIStore = () => {
+const UIStore = ({ itemCart, setItemCart }) => {
   const [itemList, setItemList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState({});
 
   useEffect(() => {
     const fetchMenu = async () => {
-      const response = await axios.get("http://192.168.1.123:3000/menu");
-      console.log(response);
+      const response = await SaWeiService.getMenues();
       if (response?.status === 200) {
         let { data } = response;
         setItemList(data);
@@ -170,7 +189,6 @@ const UIStore = () => {
   }, []);
 
   const handleSelected = (item) => {
-    console.log(item);
     setIsModalOpen(true);
     setCurrentItem(item);
   };
@@ -180,13 +198,15 @@ const UIStore = () => {
     setCurrentItem(null);
   };
 
-  const handleSubmit = () => {
-    console.log("SUBMIT");
+  const handleSubmit = (data) => {
+    let nextData = [...itemCart, data];
+    setItemCart(nextData);
     setIsModalOpen(false);
+    console.log("SUBMIT");
   };
 
   return (
-    <div>
+    <>
       <Row gutter={[16, 16]}>
         {itemList?.map((item, idx) => {
           return (
@@ -208,77 +228,6 @@ const UIStore = () => {
             </Col>
           );
         })}
-
-        <Col lg={4} xs={12}>
-          <Card
-            hoverable
-            style={{ width: "100%" }}
-            cover={
-              <img
-                alt="example"
-                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              />
-            }
-          >
-            <Meta title="Europe Street beat" description="www.instagram.com" />
-          </Card>
-        </Col>
-        <Col lg={4} xs={12}>
-          <Card
-            hoverable
-            style={{ width: "100%" }}
-            cover={
-              <img
-                alt="example"
-                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              />
-            }
-          >
-            <Meta title="Europe Street beat" description="www.instagram.com" />
-          </Card>
-        </Col>
-        <Col lg={4} xs={12}>
-          <Card
-            hoverable
-            style={{ width: "100%" }}
-            cover={
-              <img
-                alt="example"
-                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              />
-            }
-          >
-            <Meta title="Europe Street beat" description="www.instagram.com" />
-          </Card>
-        </Col>
-        <Col lg={4} xs={12}>
-          <Card
-            hoverable
-            style={{ width: "100%" }}
-            cover={
-              <img
-                alt="example"
-                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              />
-            }
-          >
-            <Meta title="Europe Street beat" description="www.instagram.com" />
-          </Card>
-        </Col>
-        <Col lg={4} xs={12}>
-          <Card
-            hoverable
-            style={{ width: "100%" }}
-            cover={
-              <img
-                alt="example"
-                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              />
-            }
-          >
-            <Meta title="Europe Street beat" description="www.instagram.com" />
-          </Card>
-        </Col>
       </Row>
 
       {isModalOpen && (
@@ -289,7 +238,7 @@ const UIStore = () => {
           onSubmit={handleSubmit}
         />
       )}
-    </div>
+    </>
   );
 };
 
