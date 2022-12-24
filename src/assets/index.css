@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.ant-card-body {
+  padding: 12px !important;
+}
+
+.ant-radio-group {
+  width: 100% !important;
+}
+
+.ant-radio-group > .ant-space {
+  width: 100% !important;
+}
+
+.ant-modal-content .ant-space-item {
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 8px;
+}
+
+.item-list-custom {
+  width: 100% !important;
+}
+
+.item-list-custom > span:nth-child(2) {
+  width: 100% !important;
+}
+
+.sign-button {
+  width: 32px;
+  height: 32px;
+  padding: 2.4px 0;
+  font-size: 16px;
+  border-radius: 5px;
+  vertical-align: -3px;
+
+}
