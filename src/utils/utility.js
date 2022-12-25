@@ -20,3 +20,18 @@ export const getLineProfile = () => {
     return obj;
   }
 };
+
+export const getName = () => {
+  const name = getStorage("line_name");
+  return name ? name : "name";
+};
+
+export const getImgProfile = () => {
+  const img = getStorage("line_img");
+  return img ? img : "img";
+};
+
+export const getLineId = () => {
+  const line_id = getStorage("line_id");
+  return line_id ? line_id : "line_id";
+};

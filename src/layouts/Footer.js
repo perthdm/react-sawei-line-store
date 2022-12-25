@@ -42,7 +42,7 @@ const Footer = ({ itemCart, onCheckout }) => {
         }}
         onClick={onCheckout}
       >
-        ตระกร้าสินค้า - {total?.amount} ชิ้น{" "}
+        ตะกร้าสินค้า - {total?.amount} ชิ้น{" "}
         <div style={{ position: "absolute", right: 15, top: 11 }}>
           ฿{total?.price}
         </div>

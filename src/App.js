@@ -16,21 +16,21 @@ const App = () => {
       throw err;
     });
 
-    if (liff.isLoggedIn()) {
-      // liff.logout();
-      let line_profile = await liff.getProfile();
+    // if (liff.isLoggedIn()) {
+    //   // liff.logout();
+    //   let line_profile = await liff.getProfile();
 
-      if (line_profile) {
-        console.log("Profile -----> ", line_profile);
+    //   if (line_profile) {
+    //     console.log("Profile -----> ", line_profile);
 
-        setStorage("line_id", line_profile?.userId);
-        setStorage("line_name", line_profile?.displayName);
-        setStorage("line_img", line_profile?.pictureUrl);
-        setStorage("line_status", line_profile?.statusMessage);
-      }
-    } else {
-      liff.login();
-    }
+    //     setStorage("line_id", line_profile?.userId);
+    //     setStorage("line_name", line_profile?.displayName);
+    //     setStorage("line_img", line_profile?.pictureUrl);
+    //     setStorage("line_status", line_profile?.statusMessage);
+    //   }
+    // } else {
+    //   liff.login();
+    // }
   };
 
   const signUp = async () => {

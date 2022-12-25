@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { Card, Row, Col, Modal, Button, List, Radio, Space, Input } from "antd";
-import axios from "axios";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import SaWeiService from "services/SaWeiService";
 
@@ -32,7 +30,14 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
   };
 
   const handleBeforeSubmit = () => {
-    let data = { _id: item?._id, name: item?.name, info, amount, option };
+    let data = {
+      _id: item?._id,
+      name: item?.name,
+      info,
+      amount,
+      option,
+      price: item?.price,
+    };
     if (item?.option.length > 0) {
       if (!option) {
         return setError("กรุณาเลือกชนิดของสินค้า");
@@ -58,11 +63,11 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           style={{
             width: "100%",
             height: "40px",
-            backgroundColor: "#83633f"
+            backgroundColor: "#83633f",
           }}
         >
           เพิ่มลงตระกร้า
-        </Button>
+        </Button>,
       ]}
     >
       {item?.option && (
@@ -73,7 +78,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
               style={{
                 fontSize: "14px",
                 color: "#00000073",
-                fontWeight: "normal"
+                fontWeight: "normal",
               }}
             >
               (เลือก 1 ชนิด)
@@ -113,7 +118,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           style={{
             fontSize: "14px",
             color: "#00000073",
-            fontWeight: "normal"
+            fontWeight: "normal",
           }}
         >
           (ใส่หรือไม่ใส่ก็ได้)
@@ -133,7 +138,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           style={{
             fontSize: "14px",
             color: "#00000073",
-            fontWeight: "normal"
+            fontWeight: "normal",
           }}
         >
           (จำนวนที่ต้องการสั่งซื้อ)
@@ -153,7 +158,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           style={{
             textAlign: "center",
             fontSize: "18px",
-            fontWeight: "bold"
+            fontWeight: "bold",
           }}
         >
           {amount}
