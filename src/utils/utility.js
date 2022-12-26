@@ -1,4 +1,5 @@
 export const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+export const LIFF_ID = process.env.REACT_APP_LIFF_ID;
 
 export const setStorage = (key, value) => {
   return localStorage.setItem(key, value);

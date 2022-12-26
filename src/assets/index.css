@@ -46,6 +46,11 @@ code {
   vertical-align: -3px;
 }
 
+.ant-list-item-meta-title{
+
+  margin-top: 0px !important;
+}
+
 /* .ant-radio-inner {
   border-color: #83633f !important;
   background-color: #83633f !important;

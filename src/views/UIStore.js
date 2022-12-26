@@ -70,7 +70,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
         </Button>,
       ]}
     >
-      {item?.option && (
+      {item?.option.length >0 && (
         <>
           <h4>
             รสชาติ{" "}
@@ -112,6 +112,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           )}
         </>
       )}
+   
       <h4>
         ข้อความถึงผู้ขาย{" "}
         <span
