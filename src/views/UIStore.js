@@ -10,7 +10,7 @@ const PLUS = "plus";
 
 const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
   const [amount, setAmount] = useState(1);
-  const [option, setOption] = useState();
+  const [selectedType, setSelectedType] = useState();
   const [info, setInfo] = useState();
   const [error, setError] = useState();
 
@@ -30,20 +30,22 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
   };
 
   const handleBeforeSubmit = () => {
+    let { _id, name, option, price } = item;
     let data = {
-      _id: item?._id,
-      name: item?.name,
+      _id,
+      name,
       info,
       amount,
-      option,
-      price: item?.price
+      selected: selectedType,
+      option: option,
+      base_price: price
     };
 
     if (item?.option.length > 0) {
-      if (!option) {
+      if (!selectedType) {
         return setError("กรุณาเลือกชนิดของสินค้า");
       }
-      data["total"] = amount * option?.price;
+      data["total"] = amount * selectedType?.price;
     } else {
       data["total"] = amount * item?.price;
     }
@@ -88,7 +90,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           <Radio.Group
             onChange={({ target: { value } }) => {
               setError("");
-              setOption(value);
+              setSelectedType(value);
             }}
           >
             <Space direction="vertical">

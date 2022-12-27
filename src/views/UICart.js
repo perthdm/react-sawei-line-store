@@ -148,7 +148,8 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                     width: "180px"
                   }}
                 >
-                  Line: <span>{getName()}asdasdasdasdasdasdasdasd</span>
+                  Line:{" "}
+                  <span style={{ fontWeight: "normal" }}>{getName()}</span>
                 </h5>
 
                 <h5 style={{ margin: "4px 0px 0px 0px", fontSize: "14px" }}>
@@ -183,8 +184,8 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                       type="danger"
                       style={{
                         color: "white",
-                        backgroundColor: "red",
-                        borderColor: "red",
+                        backgroundColor: "#e15a5a",
+                        borderColor: "#e15a5a",
                         marginRight: "-8px"
                       }}
                       icon={<DeleteOutlined />}
