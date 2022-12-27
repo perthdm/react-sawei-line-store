@@ -18,7 +18,7 @@ const Main = () => {
   return (
     <div style={{ height: "100vh" }}>
       <Header step={step} onBack={handleBack} />
-      <Content step={step} onCheckout={handleCheckout} />
+      <Content step={step} onBack={handleBack} onCheckout={handleCheckout} />
     </div>
   );
 };

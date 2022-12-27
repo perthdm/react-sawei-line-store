@@ -36,8 +36,9 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
       info,
       amount,
       option,
-      price: item?.price,
+      price: item?.price
     };
+
     if (item?.option.length > 0) {
       if (!option) {
         return setError("กรุณาเลือกชนิดของสินค้า");
@@ -63,14 +64,14 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           style={{
             width: "100%",
             height: "40px",
-            backgroundColor: "#83633f",
+            backgroundColor: "#83633f"
           }}
         >
           เพิ่มลงตระกร้า
-        </Button>,
+        </Button>
       ]}
     >
-      {item?.option.length >0 && (
+      {item?.option.length > 0 && (
         <>
           <h4>
             รสชาติ{" "}
@@ -78,7 +79,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
               style={{
                 fontSize: "14px",
                 color: "#00000073",
-                fontWeight: "normal",
+                fontWeight: "normal"
               }}
             >
               (เลือก 1 ชนิด)
@@ -112,14 +113,14 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           )}
         </>
       )}
-   
+
       <h4>
         ข้อความถึงผู้ขาย{" "}
         <span
           style={{
             fontSize: "14px",
             color: "#00000073",
-            fontWeight: "normal",
+            fontWeight: "normal"
           }}
         >
           (ใส่หรือไม่ใส่ก็ได้)
@@ -139,7 +140,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           style={{
             fontSize: "14px",
             color: "#00000073",
-            fontWeight: "normal",
+            fontWeight: "normal"
           }}
         >
           (จำนวนที่ต้องการสั่งซื้อ)
@@ -159,7 +160,7 @@ const ModalItem = ({ item, isOpen, onClose, onSubmit }) => {
           style={{
             textAlign: "center",
             fontSize: "18px",
-            fontWeight: "bold",
+            fontWeight: "bold"
           }}
         >
           {amount}
@@ -205,8 +206,36 @@ const UIStore = ({ itemCart, setItemCart }) => {
   };
 
   const handleSubmit = (data) => {
-    let nextData = [...itemCart, data];
-    setItemCart(nextData);
+    let nextItemCart = [...itemCart];
+
+    if (nextItemCart.length === 0) {
+      nextItemCart = [...itemCart, data];
+    } else if (nextItemCart.length > 0) {
+      let isDup = false;
+      nextItemCart.map((item) => {
+        if (data?._id === item._id) {
+          if (data.option) {
+            console.log("HAS OPTION");
+            if (
+              data.option._id === item.option._id &&
+              data.info === item.info
+            ) {
+              item["amount"] += data?.amount;
+              isDup = true;
+            }
+          } else if (data?.info === item.info) {
+            item["amount"] += data?.amount;
+            isDup = true;
+          }
+        }
+      });
+
+      if (!isDup) {
+        nextItemCart = [...itemCart, data];
+      }
+    }
+    console.log(nextItemCart);
+    setItemCart(nextItemCart);
     setIsModalOpen(false);
     console.log("SUBMIT");
   };

@@ -24,7 +24,7 @@ export const getLineProfile = () => {
 
 export const getName = () => {
   const name = getStorage("line_name");
-  return name ? name : "name";
+  return name ? name : "Mr.Tester Sa-Wei";
 };
 
 export const getImgProfile = () => {

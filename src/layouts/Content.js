@@ -5,7 +5,7 @@ import UIStore from "views/UIStore";
 import UICart from "../views/UICart";
 import Footer from "../layouts/Footer";
 
-const Content = ({ step, onCheckout }) => {
+const Content = ({ step, onCheckout, onBack }) => {
   const [itemCart, setItemCart] = useState([]);
 
   return (
@@ -20,7 +20,11 @@ const Content = ({ step, onCheckout }) => {
         {step === 0 ? (
           <UIStore itemCart={itemCart} setItemCart={setItemCart} />
         ) : (
-          <UICart itemCart={itemCart} setItemCart={setItemCart} />
+          <UICart
+            itemCart={itemCart}
+            setItemCart={setItemCart}
+            onBack={onBack}
+          />
         )}
       </div>
 
