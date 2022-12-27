@@ -58,6 +58,11 @@ const App = () => {
     const response = await SaWeiService.signUp();
 
     if (response.status === 200) {
+      const { address, soi } = response.data;
+
+      setStorage("soi", soi ? soi : null);
+      setStorage("address", address ? address : null);
+
       console.log("signup response ----> ", response);
     }
   };

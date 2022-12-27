@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Button, List, Modal, Input } from "antd";
-import { getImgProfile, getName, getLineId } from "../utils/utility";
+import {
+  getImgProfile,
+  getName,
+  getLineId,
+  getSoi,
+  getAddress,
+} from "../utils/utility";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 const { Meta } = Card;
 
@@ -16,11 +22,11 @@ const ModalEditAddress = ({ isOpen, onClose }) => {
             width: "100%",
             backgroundColor: "#83633f",
             color: "white",
-            height: "35px"
+            height: "35px",
           }}
         >
           บันทึก
-        </Button>
+        </Button>,
       ]}
     >
       <Row
@@ -31,14 +37,14 @@ const ModalEditAddress = ({ isOpen, onClose }) => {
           ซอย :
         </Col>
         <Col span={18}>
-          <Input placeholder="ซอย" />
+          <Input placeholder="ซอย" value={getSoi()} />
         </Col>
 
         <Col span={6} style={{ lineHeight: 1.25 }}>
           บ้านเลขที่ :
         </Col>
         <Col span={18}>
-          <Input placeholder="บ้านเลขที่" />
+          <Input placeholder="บ้านเลขที่" value={getAddress()} />
         </Col>
       </Row>
     </Modal>
@@ -97,7 +103,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             style={{
               backgroundColor: "#87735d",
               borderRadius: "10px",
-              padding: "10px"
+              padding: "10px",
             }}
           >
             <Row gutter={[16, 16]}>
@@ -110,7 +116,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   position: "absolute",
                   right: 10,
                   top: 10,
-                  backgroundColor: "tan"
+                  backgroundColor: "tan",
                 }}
                 icon={<EditOutlined />}
                 onClick={() => setIsOpenModalAddy(true)}
@@ -125,7 +131,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                       height: "100px",
                       backgroundPosition: "center",
                       border: "1px solid white",
-                      borderRadius: "8px"
+                      borderRadius: "8px",
                     }}
                   />
                 </center>
@@ -135,7 +141,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                 style={{
                   color: "white",
                   paddingLeft: "1.5rem",
-                  fontSize: "16px"
+                  fontSize: "16px",
                 }}
               >
                 <h5
@@ -145,7 +151,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    width: "180px"
+                    width: "180px",
                   }}
                 >
                   Line: <span>{getName()}asdasdasdasdasdasdasdasd</span>
@@ -157,8 +163,8 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                 <ul
                   style={{ margin: 0, paddingLeft: "20px", fontSize: "14px" }}
                 >
-                  <li>ซอย: 29</li>
-                  <li>บ้านเลขที่: 121/195</li>
+                  <li>ซอย: {getSoi()}</li>
+                  <li>บ้านเลขที่: {getAddress()}</li>
                 </ul>
               </Col>
             </Row>
@@ -185,10 +191,10 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                         color: "white",
                         backgroundColor: "red",
                         borderColor: "red",
-                        marginRight: "-8px"
+                        marginRight: "-8px",
                       }}
                       icon={<DeleteOutlined />}
-                    />
+                    />,
                   ]}
                 >
                   <List.Item.Meta
@@ -217,7 +223,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px"
+                  fontSize: "15px",
                 }}
               >
                 ทั้งหมด
@@ -229,7 +235,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px"
+                  fontSize: "15px",
                 }}
               >
                 ฿{total?.price}
@@ -257,7 +263,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             bottom: 0,
             zIndex: 100,
             background: "white",
-            display: "block"
+            display: "block",
           }}
         >
           <Button
@@ -266,7 +272,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
               textAlign: "left",
               backgroundColor: "#83633f",
               color: "white",
-              height: "45px"
+              height: "45px",
             }}
           >
             <center>ยืนยันคำสั่งซื้อ</center>

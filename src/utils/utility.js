@@ -36,3 +36,15 @@ export const getLineId = () => {
   const line_id = getStorage("line_id");
   return line_id ? line_id : "line_id";
 };
+
+export const getSoi = () => {
+  const soi = getStorage("soi");
+
+  return soi ? soi : "";
+};
+
+export const getAddress = () => {
+  const address = getStorage("address");
+
+  return address ? address : "";
+};
