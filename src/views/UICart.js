@@ -6,11 +6,19 @@ import {
   getLineId,
   getSoi,
   getAddress,
+  getLineProfile
 } from "../utils/utility";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import SaWeiService from "services/SaWeiService";
 const { Meta } = Card;
 
-const ModalEditAddress = ({ isOpen, onClose }) => {
+const ModalEditAddress = ({
+  isOpen,
+  onClose,
+  usAddress,
+  onChange,
+  onSubmit
+}) => {
   return (
     <Modal
       title="แก้ไขที่ขจัดส่ง"
@@ -22,11 +30,12 @@ const ModalEditAddress = ({ isOpen, onClose }) => {
             width: "100%",
             backgroundColor: "#83633f",
             color: "white",
-            height: "35px",
+            height: "35px"
           }}
+          onClick={onSubmit}
         >
           บันทึก
-        </Button>,
+        </Button>
       ]}
     >
       <Row
@@ -37,14 +46,24 @@ const ModalEditAddress = ({ isOpen, onClose }) => {
           ซอย :
         </Col>
         <Col span={18}>
-          <Input placeholder="ซอย" value={getSoi()} />
+          <Input
+            placeholder="ซอย"
+            value={usAddress?.soi}
+            onChange={onChange}
+            name="soi"
+          />
         </Col>
 
         <Col span={6} style={{ lineHeight: 1.25 }}>
           บ้านเลขที่ :
         </Col>
         <Col span={18}>
-          <Input placeholder="บ้านเลขที่" value={getAddress()} />
+          <Input
+            placeholder="บ้านเลขที่"
+            value={usAddress?.address}
+            onChange={onChange}
+            name="address"
+          />
         </Col>
       </Row>
     </Modal>
@@ -54,9 +73,10 @@ const ModalEditAddress = ({ isOpen, onClose }) => {
 const UICart = ({ itemCart, setItemCart, onBack }) => {
   const [total, setTotal] = useState({});
   const [isOpenModalAddy, setIsOpenModalAddy] = useState(false);
-  console.log("CART ==> ", itemCart);
+  const [userAddress, setUserAddress] = useState(getLineProfile());
 
   useEffect(() => {
+    console.log("CART ==> ", itemCart);
     let price = 0;
     let amount = 0;
     if (itemCart.length > 0) {
@@ -78,6 +98,32 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
 
   const handleCloseModal = () => {
     setIsOpenModalAddy(false);
+  };
+
+  const handleChangeData = (event) => {
+    let { name, value } = event.target;
+    setUserAddress((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleUpdateAddress = () => {
+    let reqData = {
+      _id: userAddress?._id,
+      soi: userAddress?.delivery_to?.soi,
+      address: userAddress?.delivery_to?.address
+    };
+    console.log(reqData);
+
+    SaWeiService.updateAddress(reqData)
+      .then((res) => {
+        console.log(res);
+        setIsOpenModalAddy(false);
+      })
+      .catch((err) => {});
+  };
+
+  const handleSubmitOrder = () => {
+    console.log("CART ==> ", itemCart);
+    console.log("ADDRESS ==> ", userAddress);
   };
 
   const renderChildList = (item) => {
@@ -103,7 +149,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             style={{
               backgroundColor: "#87735d",
               borderRadius: "10px",
-              padding: "10px",
+              padding: "10px"
             }}
           >
             <Row gutter={[16, 16]}>
@@ -116,7 +162,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   position: "absolute",
                   right: 10,
                   top: 10,
-                  backgroundColor: "tan",
+                  backgroundColor: "tan"
                 }}
                 icon={<EditOutlined />}
                 onClick={() => setIsOpenModalAddy(true)}
@@ -131,7 +177,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                       height: "100px",
                       backgroundPosition: "center",
                       border: "1px solid white",
-                      borderRadius: "8px",
+                      borderRadius: "8px"
                     }}
                   />
                 </center>
@@ -141,7 +187,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                 style={{
                   color: "white",
                   paddingLeft: "1.5rem",
-                  fontSize: "16px",
+                  fontSize: "16px"
                 }}
               >
                 <h5
@@ -151,7 +197,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    width: "180px",
+                    width: "180px"
                   }}
                 >
                   Line:{" "}
@@ -195,7 +241,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                         marginRight: "-8px"
                       }}
                       icon={<DeleteOutlined />}
-                    />,
+                    />
                   ]}
                 >
                   <List.Item.Meta
@@ -224,7 +270,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px",
+                  fontSize: "15px"
                 }}
               >
                 ทั้งหมด
@@ -236,7 +282,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px",
+                  fontSize: "15px"
                 }}
               >
                 ฿{total?.price}
@@ -264,7 +310,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             bottom: 0,
             zIndex: 100,
             background: "white",
-            display: "block",
+            display: "block"
           }}
         >
           <Button
@@ -273,8 +319,9 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
               textAlign: "left",
               backgroundColor: "#83633f",
               color: "white",
-              height: "45px",
+              height: "45px"
             }}
+            onClick={handleSubmitOrder}
           >
             <center>ยืนยันคำสั่งซื้อ</center>
           </Button>
@@ -282,7 +329,13 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
       </div>
 
       {isOpenModalAddy && (
-        <ModalEditAddress isOpen={isOpenModalAddy} onClose={handleCloseModal} />
+        <ModalEditAddress
+          isOpen={isOpenModalAddy}
+          onClose={handleCloseModal}
+          usAddress={userAddress}
+          onChange={handleChangeData}
+          onSubmit={handleUpdateAddress}
+        />
       )}
     </>
   );

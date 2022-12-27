@@ -33,8 +33,8 @@ const App = () => {
         .sendMessages([
           {
             type: "text",
-            text: "Hello, World!",
-          },
+            text: "Hello, World!"
+          }
         ])
         .then(() => {
           console.log("message sent");
@@ -58,10 +58,11 @@ const App = () => {
     const response = await SaWeiService.signUp();
 
     if (response.status === 200) {
-      const { address, soi } = response.data;
+      const { address, soi, _id } = response.data;
 
       setStorage("soi", soi ? soi : null);
       setStorage("address", address ? address : null);
+      setStorage("_id", _id ? _id : null);
 
       console.log("signup response ----> ", response);
     }

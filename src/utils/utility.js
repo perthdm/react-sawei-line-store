@@ -11,10 +11,11 @@ export const getStorage = (key) => {
 
 export const getLineProfile = () => {
   const obj = {
-    line_id: getStorage("line_id"),
+    _id: getStorage("_id"),
     name: getStorage("line_name"),
     img: getStorage("line_img"),
     line_status: getStorage("line_status"),
+    delivery_to: { soi: getStorage("soi"), address: getStorage("adress") }
   };
 
   if (obj) {
