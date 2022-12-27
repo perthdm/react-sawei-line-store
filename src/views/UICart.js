@@ -46,9 +46,9 @@ const ModalEditAddress = ({ isOpen, onClose }) => {
 };
 
 const UICart = ({ itemCart, setItemCart, onBack }) => {
-  console.log("cart -----> ", itemCart);
   const [total, setTotal] = useState({});
   const [isOpenModalAddy, setIsOpenModalAddy] = useState(false);
+  console.log("CART ==> ", itemCart);
 
   useEffect(() => {
     let price = 0;
@@ -134,7 +134,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                 span={18}
                 style={{
                   color: "white",
-                  padding: "0.2rem 2rem",
+                  paddingLeft: "1.5rem",
                   fontSize: "16px"
                 }}
               >
