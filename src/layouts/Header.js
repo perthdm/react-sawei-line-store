@@ -20,7 +20,7 @@ const Header = ({ step, onBack }) => {
     >
       {step === 1 && (
         <LeftOutlined
-          style={{ position: "fixed", left: "1rem", top: "1.1rem" }}
+          style={{ position: "absolute", left: "1rem", top: "1.1rem" }}
           onClick={onBack}
         />
       )}
