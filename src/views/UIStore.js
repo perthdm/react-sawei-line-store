@@ -188,6 +188,9 @@ const UIStore = ({ itemCart, setItemCart }) => {
       const response = await SaWeiService.getMenues();
       if (response?.status === 200) {
         let { data } = response;
+        data.sort((a, b) => {
+          return b["is_active"] - a["is_active"];
+        });
         setItemList(data);
       }
     };
@@ -196,6 +199,10 @@ const UIStore = ({ itemCart, setItemCart }) => {
   }, []);
 
   const handleSelected = (item) => {
+    console.log(item.is_active);
+    if (!item?.is_active) {
+      return;
+    }
     setIsModalOpen(true);
     setCurrentItem(item);
   };
@@ -253,7 +260,12 @@ const UIStore = ({ itemCart, setItemCart }) => {
                   <img
                     alt="example"
                     src={item?.img_url}
-                    style={{ height: "200px" }}
+                    style={{
+                      height: "200px",
+                      filter: item?.is_active
+                        ? "grayscale(0%)"
+                        : "grayscale(100%)"
+                    }}
                   />
                 }
                 onClick={() => handleSelected(item)}

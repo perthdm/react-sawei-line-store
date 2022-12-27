@@ -1,13 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Button, List, Modal } from "antd";
+import { Card, Row, Col, Button, List, Modal, Input } from "antd";
 import { getImgProfile, getName, getLineId } from "../utils/utility";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 const { Meta } = Card;
 
-const ModalEditAddress = (isOpen) => {
+const ModalEditAddress = ({ isOpen, onClose }) => {
   return (
-    <Modal title="แก้ไขที่ขจัดส่ง" open={isOpen} onCancel={() => {}}>
-      asasd
+    <Modal
+      title="แก้ไขที่ขจัดส่ง"
+      open={isOpen}
+      onCancel={onClose}
+      footer={[
+        <Button
+          style={{
+            width: "100%",
+            backgroundColor: "#83633f",
+            color: "white",
+            height: "35px"
+          }}
+        >
+          บันทึก
+        </Button>
+      ]}
+    >
+      <Row
+        gutter={[16, 8]}
+        style={{ marginBottom: "1.25rem", marginTop: "1.25rem" }}
+      >
+        <Col span={6} style={{ lineHeight: 1.25 }}>
+          ซอย :
+        </Col>
+        <Col span={18}>
+          <Input placeholder="ซอย" />
+        </Col>
+
+        <Col span={6} style={{ lineHeight: 1.25 }}>
+          บ้านเลขที่ :
+        </Col>
+        <Col span={18}>
+          <Input placeholder="บ้านเลขที่" />
+        </Col>
+      </Row>
     </Modal>
   );
 };
@@ -35,6 +68,10 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
     if (nextCart.length === 0) {
       onBack();
     }
+  };
+
+  const handleCloseModal = () => {
+    setIsOpenModalAddy(false);
   };
 
   const renderChildList = (item) => {
@@ -237,7 +274,9 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
         </div>
       </div>
 
-      {isOpenModalAddy && <ModalEditAddress isOpen={isOpenModalAddy} />}
+      {isOpenModalAddy && (
+        <ModalEditAddress isOpen={isOpenModalAddy} onClose={handleCloseModal} />
+      )}
     </>
   );
 };
