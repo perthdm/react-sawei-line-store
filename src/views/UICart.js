@@ -1,14 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Button, List, Modal, Input } from "antd";
+import {
+  Card,
+  Row,
+  Col,
+  Button,
+  List,
+  Modal,
+  Input,
+  Radio,
+  Space,
+  Upload,
+} from "antd";
 import {
   getImgProfile,
   getName,
   getLineId,
   getSoi,
   getAddress,
-  getLineProfile
+  getLineProfile,
 } from "../utils/utility";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  InboxOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import SaWeiService from "services/SaWeiService";
 const { Meta } = Card;
 
@@ -17,7 +33,7 @@ const ModalEditAddress = ({
   onClose,
   usAddress,
   onChange,
-  onSubmit
+  onSubmit,
 }) => {
   return (
     <Modal
@@ -30,12 +46,12 @@ const ModalEditAddress = ({
             width: "100%",
             backgroundColor: "#83633f",
             color: "white",
-            height: "35px"
+            height: "35px",
           }}
           onClick={onSubmit}
         >
           บันทึก
-        </Button>
+        </Button>,
       ]}
     >
       <Row
@@ -75,6 +91,12 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
   const [isOpenModalAddy, setIsOpenModalAddy] = useState(false);
   const [userAddress, setUserAddress] = useState(getLineProfile());
 
+  const [value, setValue] = useState(1);
+  const onChange = (e) => {
+    console.log("radio checked", e.target.value);
+    setValue(e.target.value);
+  };
+
   useEffect(() => {
     console.log("CART ==> ", itemCart);
     let price = 0;
@@ -109,7 +131,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
     let reqData = {
       _id: userAddress?._id,
       soi: userAddress?.delivery_to?.soi,
-      address: userAddress?.delivery_to?.address
+      address: userAddress?.delivery_to?.address,
     };
     console.log(reqData);
 
@@ -149,7 +171,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             style={{
               backgroundColor: "#87735d",
               borderRadius: "10px",
-              padding: "10px"
+              padding: "10px",
             }}
           >
             <Row gutter={[16, 16]}>
@@ -162,7 +184,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   position: "absolute",
                   right: 10,
                   top: 10,
-                  backgroundColor: "tan"
+                  backgroundColor: "tan",
                 }}
                 icon={<EditOutlined />}
                 onClick={() => setIsOpenModalAddy(true)}
@@ -177,7 +199,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                       height: "100px",
                       backgroundPosition: "center",
                       border: "1px solid white",
-                      borderRadius: "8px"
+                      borderRadius: "8px",
                     }}
                   />
                 </center>
@@ -187,7 +209,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                 style={{
                   color: "white",
                   paddingLeft: "1.5rem",
-                  fontSize: "16px"
+                  fontSize: "16px",
                 }}
               >
                 <h5
@@ -197,7 +219,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    width: "180px"
+                    width: "180px",
                   }}
                 >
                   Line:{" "}
@@ -238,10 +260,10 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                         color: "white",
                         backgroundColor: "#e15a5a",
                         borderColor: "#e15a5a",
-                        marginRight: "-8px"
+                        marginRight: "-8px",
                       }}
                       icon={<DeleteOutlined />}
-                    />
+                    />,
                   ]}
                 >
                   <List.Item.Meta
@@ -270,7 +292,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px"
+                  fontSize: "15px",
                 }}
               >
                 ทั้งหมด
@@ -282,7 +304,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px"
+                  fontSize: "15px",
                 }}
               >
                 ฿{total?.price}
@@ -294,10 +316,19 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             <h4 style={{ margin: "5px 0px", fontSize: "16px" }}>
               วิธีชำระเงิน
             </h4>
-            <ul>
-              <li>เงินสด</li>
-              <li>โอนจ่าย</li>
-            </ul>
+            <Radio.Group onChange={onChange} value={value}>
+              <Space direction="vertical">
+                <Radio value={1}>เงินสด</Radio>
+                <Radio value={2}>
+                  โอนจ่าย{" "}
+                  {value == 2 ? (
+                    <Upload name="slip" action="/upload.do" listType="picture">
+                      <Button icon={<UploadOutlined />}>แนบสลิป</Button>
+                    </Upload>
+                  ) : null}
+                </Radio>
+              </Space>
+            </Radio.Group>
           </Card>
         </div>
 
@@ -310,7 +341,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             bottom: 0,
             zIndex: 100,
             background: "white",
-            display: "block"
+            display: "block",
           }}
         >
           <Button
@@ -319,7 +350,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
               textAlign: "left",
               backgroundColor: "#83633f",
               color: "white",
-              height: "45px"
+              height: "45px",
             }}
             onClick={handleSubmitOrder}
           >

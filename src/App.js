@@ -7,8 +7,8 @@ const liff = window.liff;
 
 const App = () => {
   useEffect(() => {
-    fetchLiff();
-    signUp();
+    // fetchLiff();
+    // signUp();
   }, []);
 
   const fetchLiff = async () => {
