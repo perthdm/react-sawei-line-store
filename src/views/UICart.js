@@ -18,6 +18,7 @@ import {
   getSoi,
   getAddress,
   getLineProfile,
+  sendLiffOrder,
 } from "../utils/utility";
 import {
   DeleteOutlined,
@@ -27,6 +28,7 @@ import {
 } from "@ant-design/icons";
 import SaWeiService from "services/SaWeiService";
 const { Meta } = Card;
+const liff = window.liff;
 
 const ModalEditAddress = ({
   isOpen,
@@ -133,6 +135,9 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
       soi: userAddress?.delivery_to?.soi,
       address: userAddress?.delivery_to?.address,
     };
+
+    console.log('user address -----> ',userAddress);
+
     console.log(reqData);
 
     SaWeiService.updateAddress(reqData)
@@ -146,6 +151,8 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
   const handleSubmitOrder = () => {
     console.log("CART ==> ", itemCart);
     console.log("ADDRESS ==> ", userAddress);
+
+    sendLiffOrder(itemCart);
   };
 
   const renderChildList = (item) => {

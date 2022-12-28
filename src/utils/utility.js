@@ -1,3 +1,5 @@
+const liff = window.liff;
+
 export const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 export const LIFF_ID = process.env.REACT_APP_LIFF_ID;
 
@@ -16,7 +18,7 @@ export const getLineProfile = () => {
     name: getStorage("line_name"),
     img: getStorage("line_img"),
     line_status: getStorage("line_status"),
-    delivery_to: { soi: getStorage("soi"), address: getStorage("adress") }
+    delivery_to: { soi: getStorage("soi"), address: getStorage("adress") },
   };
 
   if (obj) {
@@ -49,4 +51,34 @@ export const getAddress = () => {
   const address = getStorage("address");
 
   return address ? address : "";
+};
+
+export const sendLiffOrder = (itemCart) => {
+  let str = "";
+
+  for (let i = 0; i < itemCart.length; i++) {
+    const item = itemCart[i];
+
+    str += `${item.name} ${item.selected ? item.selected.name : ""} ${
+      item.amount
+    } ${item.info ? item.info : ""} ${i != itemCart.length - 1 ? "\n" : ""}`;
+  }
+
+  // console.log(str);
+
+  if (liff.isLoggedIn()) {
+    liff
+      .sendMessages([
+        {
+          type: "text",
+          text: str,
+        },
+      ])
+      .then(() => {
+        console.log("message sent");
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  }
 };
