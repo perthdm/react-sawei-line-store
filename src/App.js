@@ -7,8 +7,8 @@ const liff = window.liff;
 
 const App = () => {
   useEffect(() => {
-    // fetchLiff();
-    // signUp();
+    fetchLiff();
+    signUp();
   }, []);
 
   const fetchLiff = async () => {
@@ -57,14 +57,14 @@ const App = () => {
 
     const response = await SaWeiService.signUp();
 
-    if (response.status === 200) {
-      const { address, soi, _id } = response.data;
-
-      setStorage("soi", soi ? soi : null);
-      setStorage("address", address ? address : null);
-      setStorage("_id", _id ? _id : null);
-
+    if (response.status === 201) {
       console.log("signup response ----> ", response);
+
+      const { address, _id } = response.data;
+
+      setStorage("soi", address?.soi ? address?.soi : "empty");
+      setStorage("address", address?.address ? address?.address : "empty");
+      setStorage("_id", _id);
     }
   };
 

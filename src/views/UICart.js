@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Button, List, Radio, Space, message } from "antd";
-import {
-  getImgProfile,
-  getName,
-  getSoi,
-  getAddress,
-  getLineProfile
-} from "../utils/utility";
+import { getLineProfile, setStorage } from "../utils/utility";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import SaWeiService from "services/SaWeiService";
 import MDItemInfo from "components/Modal/MDItemInfo";
@@ -14,12 +8,18 @@ import MDEditAddress from "components/Modal/MDEditAddress";
 import krungthaiImage from "assets/image/krung-thai.png";
 import promptImage from "assets/image/prompt.png";
 
-const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
+const UICart = ({
+  itemCart,
+  setItemCart,
+  onBack,
+  sumData,
+  payment,
+  setPayment,
+}) => {
   const [isOpenModalAddy, setIsOpenModalAddy] = useState(false);
-  const [userAddress, setUserAddress] = useState(getLineProfile());
+  const [profile, setProfile] = useState(getLineProfile());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState({});
-  const [value, setValue] = useState(1);
   const [cart, setCart] = useState();
   const [currentIdx, setCurrentIdx] = useState();
 
@@ -29,7 +29,7 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
 
   const onChange = (e) => {
     console.log("radio checked", e.target.value);
-    setValue(e.target.value);
+    setPayment(e.target.value);
   };
 
   const removeItem = (itemIndex) => {
@@ -52,20 +52,23 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
 
   const handleChangeData = (event) => {
     let { name, value } = event.target;
-    setUserAddress((prevState) => ({ ...prevState, [name]: value }));
+    setProfile((prevState) => ({
+      ...prevState,
+      delivery_to: { ...prevState.delivery_to, [name]: value },
+    }));
   };
 
   const handleUpdateAddress = () => {
     let reqData = {
-      _id: userAddress?._id,
-      soi: userAddress?.delivery_to?.soi,
-      address: userAddress?.delivery_to?.address
+      customer_id: profile?._id,
+      ...profile?.delivery_to,
     };
-
-    console.log("user address -----> ", userAddress);
+    console.log("user address -----> ", profile);
 
     SaWeiService.updateAddress(reqData)
       .then((res) => {
+        setStorage("soi", reqData.soi);
+        setStorage("address", reqData.address);
         setIsOpenModalAddy(false);
       })
       .catch((err) => {});
@@ -139,7 +142,7 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
             style={{
               backgroundColor: "#87735d",
               borderRadius: "10px",
-              padding: "10px"
+              padding: "10px",
             }}
           >
             <Row gutter={[16, 16]}>
@@ -152,7 +155,7 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
                   position: "absolute",
                   right: 10,
                   top: 10,
-                  backgroundColor: "tan"
+                  backgroundColor: "tan",
                 }}
                 icon={<EditOutlined />}
                 onClick={() => setIsOpenModalAddy(true)}
@@ -161,13 +164,13 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
                 <center>
                   <div
                     style={{
-                      backgroundImage: `url(${getImgProfile()})`,
+                      backgroundImage: `url(${profile?.img})`,
                       backgroundSize: "cover",
                       width: "81px",
                       height: "100px",
                       backgroundPosition: "center",
                       border: "1px solid white",
-                      borderRadius: "8px"
+                      borderRadius: "8px",
                     }}
                   />
                 </center>
@@ -177,7 +180,7 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
                 style={{
                   color: "white",
                   paddingLeft: "1.5rem",
-                  fontSize: "16px"
+                  fontSize: "16px",
                 }}
               >
                 <h5
@@ -187,11 +190,11 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    width: "180px"
+                    width: "180px",
                   }}
                 >
                   Line:{" "}
-                  <span style={{ fontWeight: "normal" }}>{getName()}</span>
+                  <span style={{ fontWeight: "normal" }}>{profile?.name}</span>
                 </h5>
 
                 <h5 style={{ margin: "4px 0px 0px 0px", fontSize: "14px" }}>
@@ -200,8 +203,28 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
                 <ul
                   style={{ margin: 0, paddingLeft: "20px", fontSize: "14px" }}
                 >
-                  <li>ซอย: {getSoi()}</li>
-                  <li>บ้านเลขที่: {getAddress()}</li>
+                  <li>
+                    ซอย:{" "}
+                    {profile?.delivery_to?.soi !== "empty" ? (
+                      profile?.delivery_to?.soi
+                    ) : (
+                      <span style={{ color: "#ffd177" }}>
+                        {" "}
+                        *กรุณากรอกข้อมูล
+                      </span>
+                    )}
+                  </li>
+                  <li>
+                    บ้านเลขที่:{" "}
+                    {profile?.delivery_to?.address !== "empty" ? (
+                      profile?.delivery_to?.address
+                    ) : (
+                      <span style={{ color: "#ffd177" }}>
+                        {" "}
+                        *กรุณากรอกข้อมูล
+                      </span>
+                    )}
+                  </li>
                 </ul>
               </Col>
             </Row>
@@ -231,10 +254,10 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
                         color: "white",
                         backgroundColor: "#e15a5a",
                         borderColor: "#e15a5a",
-                        marginRight: "-8px"
+                        marginRight: "-8px",
                       }}
                       icon={<DeleteOutlined />}
-                    />
+                    />,
                   ]}
                 >
                   <List.Item.Meta
@@ -277,7 +300,7 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px"
+                  fontSize: "15px",
                 }}
               >
                 ทั้งหมด
@@ -289,7 +312,7 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px"
+                  fontSize: "15px",
                 }}
               >
                 ฿{sumData?.price}
@@ -301,20 +324,20 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
             <h4 style={{ margin: "5px 0px", fontSize: "16px" }}>
               ช่องทางการชำระเงิน
             </h4>
-            <Radio.Group onChange={onChange} value={value}>
+            <Radio.Group onChange={onChange} value={payment}>
               <Space direction="vertical">
                 <Radio value={1}>เงินสด </Radio>
                 <Radio value={2}>พร้อมเพย์ / ธนาคาร</Radio>
               </Space>
             </Radio.Group>
 
-            {value === 2 && (
+            {payment === 2 && (
               <div>
                 <Card
                   style={{
                     marginTop: "10px",
                     borderRadius: "10px",
-                    backgroundColor: "#023d6a"
+                    backgroundColor: "#023d6a",
                   }}
                 >
                   <Row gutter={[16, 8]}>
@@ -346,7 +369,7 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
                     marginTop: "10px",
                     borderRadius: "10px",
                     backgroundColor: "#049cda",
-                    minHeight: "120px"
+                    minHeight: "120px",
                   }}
                 >
                   <Row gutter={[16, 8]}>
@@ -384,7 +407,7 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
         <MDEditAddress
           isOpen={isOpenModalAddy}
           onClose={handleCloseModalAddress}
-          usAddress={userAddress}
+          usAddress={profile}
           onChange={handleChangeData}
           onSubmit={handleUpdateAddress}
         />
