@@ -93,7 +93,10 @@ const UIStore = ({ itemCart, setItemCart }) => {
                 }
                 onClick={() => handleSelected(item)}
               >
-                <Meta title={item?.name} description={`ราคาเริ่มต้น 10 บาท`} />
+                <Meta
+                  title={item?.name}
+                  description={`ราคาเริ่มต้น ${item?.price} บาท`}
+                />
               </Card>
             </Col>
           );

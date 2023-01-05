@@ -9,7 +9,7 @@ const PLUS = "plus";
 const MDItemInfo = ({ item, isOpen, onClose, onSubmit, isEdit }) => {
   const [amount, setAmount] = useState(item?.amount || 1);
   const [selectedType, setSelectedType] = useState(item?.selected);
-  const [info, setInfo] = useState(item?.info);
+  const [info, setInfo] = useState(item?.info || "");
   const [error, setError] = useState();
 
   const handleChangeAmount = (type) => {
@@ -35,17 +35,14 @@ const MDItemInfo = ({ item, isOpen, onClose, onSubmit, isEdit }) => {
       info,
       amount,
       selected: selectedType,
-      option: option,
-      base_price: price
+      option,
+      price
     };
 
     if (item?.option.length > 0) {
       if (!selectedType) {
         return setError("กรุณาเลือกชนิดของสินค้า");
       }
-      data["total"] = amount * selectedType?.price;
-    } else {
-      data["total"] = amount * item?.price;
     }
     onSubmit(data);
   };

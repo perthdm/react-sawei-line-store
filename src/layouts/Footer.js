@@ -4,19 +4,7 @@ import { Button } from "antd";
 // base-color #FF884B
 // inactive #818c9d
 
-const Footer = ({ itemCart, onCheckout }) => {
-  const [total, setTotal] = useState({});
-
-  useEffect(() => {
-    let price = 0;
-    let amount = 0;
-    itemCart.map((item) => {
-      price += item?.total;
-      amount += item?.amount;
-    });
-    setTotal({ amount, price });
-  }, [itemCart]);
-
+const Footer = ({ itemCart, onCheckout, sumData }) => {
   return (
     <div
       style={{
@@ -42,9 +30,9 @@ const Footer = ({ itemCart, onCheckout }) => {
         }}
         onClick={onCheckout}
       >
-        ตะกร้าสินค้า - {total?.amount} ชิ้น{" "}
+        ตะกร้าสินค้า - {sumData?.amount} ชิ้น{" "}
         <div style={{ position: "absolute", right: 15, top: 11 }}>
-          ฿{total?.price}
+          ฿{sumData?.price}
         </div>
       </Button>
     </div>

@@ -1,20 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Row,
-  Col,
-  Button,
-  List,
-  Modal,
-  Input,
-  Radio,
-  Space,
-  Upload
-} from "antd";
+import { Card, Row, Col, Button, List, Radio, Space, Upload } from "antd";
 import {
   getImgProfile,
   getName,
-  getLineId,
   getSoi,
   getAddress,
   getLineProfile,
@@ -23,71 +11,13 @@ import {
 import {
   DeleteOutlined,
   EditOutlined,
-  InboxOutlined,
   UploadOutlined
 } from "@ant-design/icons";
 import SaWeiService from "services/SaWeiService";
 import MDItemInfo from "components/Modal/MDItemInfo";
+import MDEditAddress from "components/Modal/MDEditAddress";
 
-const ModalEditAddress = ({
-  isOpen,
-  onClose,
-  usAddress,
-  onChange,
-  onSubmit
-}) => {
-  return (
-    <Modal
-      title="แก้ไขที่ขจัดส่ง"
-      open={isOpen}
-      onCancel={onClose}
-      footer={[
-        <Button
-          style={{
-            width: "100%",
-            backgroundColor: "#83633f",
-            color: "white",
-            height: "35px"
-          }}
-          onClick={onSubmit}
-        >
-          บันทึก
-        </Button>
-      ]}
-    >
-      <Row
-        gutter={[16, 8]}
-        style={{ marginBottom: "1.25rem", marginTop: "1.25rem" }}
-      >
-        <Col span={6} style={{ lineHeight: 1.25 }}>
-          ซอย :
-        </Col>
-        <Col span={18}>
-          <Input
-            placeholder="ซอย"
-            value={usAddress?.soi}
-            onChange={onChange}
-            name="soi"
-          />
-        </Col>
-
-        <Col span={6} style={{ lineHeight: 1.25 }}>
-          บ้านเลขที่ :
-        </Col>
-        <Col span={18}>
-          <Input
-            placeholder="บ้านเลขที่"
-            value={usAddress?.address}
-            onChange={onChange}
-            name="address"
-          />
-        </Col>
-      </Row>
-    </Modal>
-  );
-};
-
-const UICart = ({ itemCart, setItemCart, onBack }) => {
+const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
   const [total, setTotal] = useState({});
   const [isOpenModalAddy, setIsOpenModalAddy] = useState(false);
   const [userAddress, setUserAddress] = useState(getLineProfile());
@@ -95,6 +25,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
   const [currentItem, setCurrentItem] = useState({});
   const [value, setValue] = useState(1);
   const [cart, setCart] = useState();
+  const [currentIdx, setCurrentIdx] = useState();
 
   const onChange = (e) => {
     console.log("radio checked", e.target.value);
@@ -102,15 +33,6 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
   };
 
   useEffect(() => {
-    let price = 0;
-    let amount = 0;
-    if (itemCart.length > 0) {
-      itemCart.map((item) => {
-        price += item?.total;
-        amount += item?.amount;
-      });
-    }
-    setTotal({ amount, price });
     setCart([...itemCart]);
   }, [itemCart]);
 
@@ -123,6 +45,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
   };
 
   const handleCloseModal = () => {
+    setCurrentIdx(undefined);
     setIsModalOpen(false);
     setCurrentItem(null);
   };
@@ -159,33 +82,58 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
     sendLiffOrder(itemCart);
   };
 
-  const handleSetEdit = (item) => {
+  const handleSetEdit = (item, index) => {
+    setCurrentIdx(index);
     setCurrentItem(item);
     setIsModalOpen(true);
   };
 
-  const handleUpdateCart = (data) => {
-    let result = [...itemCart].map((item) =>
-      data?._id === item?._id ? data : item
-    );
-    setItemCart(result);
-    setIsModalOpen(false);
+  const mergeItem = (list) => {
+    let array = [];
+    if (list.length > 0) {
+      list.map((item, index) => {
+        if (index === 0) {
+          array.push(item);
+        } else {
+          let dup = false;
+          array.map((pItem) => {
+            if (item._id === pItem._id) {
+              if (item.selected) {
+                if (
+                  item.selected._id === pItem.selected._id &&
+                  item.info === pItem.info
+                ) {
+                  pItem["amount"] += item["amount"];
+                  dup = true;
+                }
+              } else if (item.info === pItem.info) {
+                pItem["amount"] += item["amount"];
+                dup = true;
+              }
+            }
+          });
+
+          if (!dup) {
+            array = [...array, item];
+          }
+        }
+      });
+    }
+    return array;
   };
 
-  const renderChildList = (item) => {
-    return (
-      <Row>
-        {item?.selected && <Col span={24}>{item?.selected.name}</Col>}
-        {item?.info && <Col span={24}>{item?.info}</Col>}
-        <Col
-          span={24}
-          style={{ color: "#29f" }}
-          onClick={() => handleSetEdit(item)}
-        >
-          Edit
-        </Col>
-      </Row>
-    );
+  const handleUpdateCart = (data) => {
+    let nextCart = [...itemCart];
+    nextCart[currentIdx] = data;
+    // let result = [...itemCart].map((item) =>
+    //   data?._id === item?._id ? data : item
+    // );
+
+    // console.log(result);
+
+    setItemCart(mergeItem(nextCart));
+
+    setIsModalOpen(false);
   };
 
   return (
@@ -279,7 +227,10 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   style={{ padding: "12px 6px" }}
                   actions={[
                     <span style={{ marginRight: "15px", color: "black" }}>
-                      ฿{item?.total}
+                      ฿
+                      {item?.selected
+                        ? item?.selected?.price * item?.amount
+                        : item?.price * item?.amount}
                     </span>,
                     <Button
                       onClick={() => removeItem(idx)}
@@ -295,9 +246,23 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   ]}
                 >
                   <List.Item.Meta
-                    avatar={"x" + item?.amount}
+                    avatar={"×" + item?.amount}
                     title={<span>{item.name}</span>}
-                    description={renderChildList(item)}
+                    description={
+                      <Row>
+                        {item?.selected && (
+                          <Col span={24}>{item?.selected.name}</Col>
+                        )}
+                        {item?.info && <Col span={24}>{item?.info}</Col>}
+                        <Col
+                          span={24}
+                          style={{ color: "#29f" }}
+                          onClick={() => handleSetEdit(item, idx)}
+                        >
+                          Edit
+                        </Col>
+                      </Row>
+                    }
                   />
                 </List.Item>
               )}
@@ -307,7 +272,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             <Row style={{ padding: "0px 6px" }} gutter={[0, 4]}>
               <Col span={20}> ค่าอาหาร</Col>
               <Col span={4} style={{ textAlign: "right" }}>
-                ฿{total?.price}
+                ฿{sumData?.price}
               </Col>
 
               <Col span={20}> ค่าส่ง (ฟรีหมู่บ้าน Grand Valley Village)</Col>
@@ -335,7 +300,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   fontSize: "15px"
                 }}
               >
-                ฿{total?.price}
+                ฿{sumData?.price}
               </Col>
             </Row>
           </Card>
@@ -388,7 +353,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
       </div>
 
       {isOpenModalAddy && (
-        <ModalEditAddress
+        <MDEditAddress
           isOpen={isOpenModalAddy}
           onClose={handleCloseModalAddress}
           usAddress={userAddress}
