@@ -9,7 +9,7 @@ import {
   Input,
   Radio,
   Space,
-  Upload,
+  Upload
 } from "antd";
 import {
   getImgProfile,
@@ -18,24 +18,23 @@ import {
   getSoi,
   getAddress,
   getLineProfile,
-  sendLiffOrder,
+  sendLiffOrder
 } from "../utils/utility";
 import {
   DeleteOutlined,
   EditOutlined,
   InboxOutlined,
-  UploadOutlined,
+  UploadOutlined
 } from "@ant-design/icons";
 import SaWeiService from "services/SaWeiService";
-const { Meta } = Card;
-const liff = window.liff;
+import MDItemInfo from "components/Modal/MDItemInfo";
 
 const ModalEditAddress = ({
   isOpen,
   onClose,
   usAddress,
   onChange,
-  onSubmit,
+  onSubmit
 }) => {
   return (
     <Modal
@@ -48,12 +47,12 @@ const ModalEditAddress = ({
             width: "100%",
             backgroundColor: "#83633f",
             color: "white",
-            height: "35px",
+            height: "35px"
           }}
           onClick={onSubmit}
         >
           บันทึก
-        </Button>,
+        </Button>
       ]}
     >
       <Row
@@ -92,15 +91,17 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
   const [total, setTotal] = useState({});
   const [isOpenModalAddy, setIsOpenModalAddy] = useState(false);
   const [userAddress, setUserAddress] = useState(getLineProfile());
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentItem, setCurrentItem] = useState({});
   const [value, setValue] = useState(1);
+  const [cart, setCart] = useState();
+
   const onChange = (e) => {
     console.log("radio checked", e.target.value);
     setValue(e.target.value);
   };
 
   useEffect(() => {
-    console.log("CART ==> ", itemCart);
     let price = 0;
     let amount = 0;
     if (itemCart.length > 0) {
@@ -110,6 +111,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
       });
     }
     setTotal({ amount, price });
+    setCart([...itemCart]);
   }, [itemCart]);
 
   const removeItem = (itemIndex) => {
@@ -121,6 +123,11 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
   };
 
   const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setCurrentItem(null);
+  };
+
+  const handleCloseModalAddress = () => {
     setIsOpenModalAddy(false);
   };
 
@@ -133,16 +140,13 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
     let reqData = {
       _id: userAddress?._id,
       soi: userAddress?.delivery_to?.soi,
-      address: userAddress?.delivery_to?.address,
+      address: userAddress?.delivery_to?.address
     };
 
-    console.log('user address -----> ',userAddress);
-
-    console.log(reqData);
+    console.log("user address -----> ", userAddress);
 
     SaWeiService.updateAddress(reqData)
       .then((res) => {
-        console.log(res);
         setIsOpenModalAddy(false);
       })
       .catch((err) => {});
@@ -155,12 +159,29 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
     sendLiffOrder(itemCart);
   };
 
+  const handleSetEdit = (item) => {
+    setCurrentItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleUpdateCart = (data) => {
+    let result = [...itemCart].map((item) =>
+      data?._id === item?._id ? data : item
+    );
+    setItemCart(result);
+    setIsModalOpen(false);
+  };
+
   const renderChildList = (item) => {
     return (
       <Row>
-        {item?.option && <Col span={24}>{item?.option.name}</Col>}
+        {item?.selected && <Col span={24}>{item?.selected.name}</Col>}
         {item?.info && <Col span={24}>{item?.info}</Col>}
-        <Col span={24} style={{ color: "#29f" }}>
+        <Col
+          span={24}
+          style={{ color: "#29f" }}
+          onClick={() => handleSetEdit(item)}
+        >
           Edit
         </Col>
       </Row>
@@ -178,7 +199,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             style={{
               backgroundColor: "#87735d",
               borderRadius: "10px",
-              padding: "10px",
+              padding: "10px"
             }}
           >
             <Row gutter={[16, 16]}>
@@ -191,7 +212,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   position: "absolute",
                   right: 10,
                   top: 10,
-                  backgroundColor: "tan",
+                  backgroundColor: "tan"
                 }}
                 icon={<EditOutlined />}
                 onClick={() => setIsOpenModalAddy(true)}
@@ -206,7 +227,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                       height: "100px",
                       backgroundPosition: "center",
                       border: "1px solid white",
-                      borderRadius: "8px",
+                      borderRadius: "8px"
                     }}
                   />
                 </center>
@@ -216,7 +237,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                 style={{
                   color: "white",
                   paddingLeft: "1.5rem",
-                  fontSize: "16px",
+                  fontSize: "16px"
                 }}
               >
                 <h5
@@ -226,7 +247,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    width: "180px",
+                    width: "180px"
                   }}
                 >
                   Line:{" "}
@@ -252,7 +273,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             <List
               className="demo-loadmore-list"
               itemLayout="horizontal"
-              dataSource={itemCart}
+              dataSource={cart}
               renderItem={(item, idx) => (
                 <List.Item
                   style={{ padding: "12px 6px" }}
@@ -267,15 +288,15 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                         color: "white",
                         backgroundColor: "#e15a5a",
                         borderColor: "#e15a5a",
-                        marginRight: "-8px",
+                        marginRight: "-8px"
                       }}
                       icon={<DeleteOutlined />}
-                    />,
+                    />
                   ]}
                 >
                   <List.Item.Meta
                     avatar={"x" + item?.amount}
-                    title={<a href="https://ant.design">{item.name}</a>}
+                    title={<span>{item.name}</span>}
                     description={renderChildList(item)}
                   />
                 </List.Item>
@@ -299,7 +320,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px",
+                  fontSize: "15px"
                 }}
               >
                 ทั้งหมด
@@ -311,7 +332,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px",
+                  fontSize: "15px"
                 }}
               >
                 ฿{total?.price}
@@ -348,7 +369,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
             bottom: 0,
             zIndex: 100,
             background: "white",
-            display: "block",
+            display: "block"
           }}
         >
           <Button
@@ -357,7 +378,7 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
               textAlign: "left",
               backgroundColor: "#83633f",
               color: "white",
-              height: "45px",
+              height: "45px"
             }}
             onClick={handleSubmitOrder}
           >
@@ -369,10 +390,20 @@ const UICart = ({ itemCart, setItemCart, onBack }) => {
       {isOpenModalAddy && (
         <ModalEditAddress
           isOpen={isOpenModalAddy}
-          onClose={handleCloseModal}
+          onClose={handleCloseModalAddress}
           usAddress={userAddress}
           onChange={handleChangeData}
           onSubmit={handleUpdateAddress}
+        />
+      )}
+
+      {isModalOpen && (
+        <MDItemInfo
+          item={currentItem}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onSubmit={handleUpdateCart}
+          isEdit={true}
         />
       )}
     </>
