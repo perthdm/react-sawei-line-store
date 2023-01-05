@@ -4,7 +4,8 @@ import { API_ENDPOINT, getLineProfile } from "utils/utility";
 const ENDPOINT = {
   GET_MENUES: `${API_ENDPOINT}/menu`,
   SIGN_UP: `${API_ENDPOINT}/customer/sign-up`,
-  UPDATE_ADDRESS: `${API_ENDPOINT}/customer/address`
+  UPDATE_ADDRESS: `${API_ENDPOINT}/customer/address`,
+  SUBMIT_ORDER: `${API_ENDPOINT}/order`,
 };
 
 const SaWeiService = {
@@ -16,7 +17,7 @@ const SaWeiService = {
     return axios({
       method: "POST",
       url: ENDPOINT.SIGN_UP,
-      data: getLineProfile()
+      data: getLineProfile(),
     });
   },
 
@@ -24,9 +25,17 @@ const SaWeiService = {
     return axios({
       method: "POST",
       url: ENDPOINT.UPDATE_ADDRESS,
-      data
+      data,
     });
-  }
+  },
+
+  submitOrder: (data) => {
+    return axios({
+      method: "POST",
+      url: ENDPOINT.SUBMIT_ORDER,
+      data,
+    });
+  },
 };
 
 export default SaWeiService;

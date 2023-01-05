@@ -49,3 +49,19 @@ export const setLiffMessageOrder = (
 
   return str;
 };
+
+export const setOrderData = (itemInCart) => {
+  let obj = [];
+
+  for (let i = 0; i < itemInCart.length; i++) {
+    const item = itemInCart[i];
+
+    obj.push({
+      menu_id: item._id,
+      option_id: item.selected ? item.selected._id : null,
+      amount: item.amount,
+    });
+  }
+
+  return obj;
+};

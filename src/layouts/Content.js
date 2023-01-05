@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import { setLiffMessageOrder, getLineProfile } from "utils/utility";
-
+import {
+  setLiffMessageOrder,
+  getLineProfile,
+  setOrderData,
+} from "utils/utility";
+import SaWeiService from "services/SaWeiService";
 import UIStore from "views/UIStore";
 import UICart from "../views/UICart";
 import Footer from "../layouts/Footer";
@@ -32,6 +36,7 @@ const Content = ({ step, onCheckout, onBack }) => {
 
     const {
       delivery_to: { soi, address },
+      _id,
     } = getLineProfile();
 
     if (soi === "empty" || address === "empty") {
@@ -49,6 +54,13 @@ const Content = ({ step, onCheckout, onBack }) => {
       payment
     );
 
+    const obj = {
+      item: setOrderData(itemCart),
+      total_price: summaryData?.price,
+      address: `บ้านเลขที่ ${address} - ซอย ${soi}`,
+      customer_id: _id,
+    };
+
     liff
       .sendMessages([
         {
@@ -57,6 +69,14 @@ const Content = ({ step, onCheckout, onBack }) => {
         },
       ])
       .then(() => {
+        const response = SaWeiService.submitOrder(obj)
+          .then((res) => {
+            console.log("submit order -----> ", res);
+          })
+          .catch((err) => {
+            console.log("submit order error -----> ", err);
+          });
+
         Swal.fire("สำเร็จ!", "ยืนยันคำสั่งซื้อสำเร็จ", "success");
         setItemCart([]);
         onBack();
