@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import { sendLiffOrder, getLineProfile } from "utils/utility";
 
 import UIStore from "views/UIStore";
 import UICart from "../views/UICart";
@@ -22,6 +22,13 @@ const Content = ({ step, onCheckout, onBack }) => {
     setSummaryData({ price, amount });
   }, [itemCart]);
 
+  const handleSubmitOrder = () => {
+    console.log("CART ==> ", itemCart);
+    console.log("ADDRESS ==> ", getLineProfile());
+
+    sendLiffOrder(itemCart);
+  };
+
   return (
     <>
       <div
@@ -43,11 +50,12 @@ const Content = ({ step, onCheckout, onBack }) => {
         )}
       </div>
 
-      {step === 0 && itemCart.length > 0 && (
+      {itemCart.length > 0 && (
         <Footer
-          itemCart={itemCart}
           onCheckout={onCheckout}
           sumData={summaryData}
+          step={step}
+          submitOrder={handleSubmitOrder}
         />
       )}
     </>

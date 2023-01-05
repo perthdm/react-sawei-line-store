@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button } from "antd";
 
 // base-color #FF884B
 // inactive #818c9d
 
-const Footer = ({ itemCart, onCheckout, sumData }) => {
+const Footer = ({ onCheckout, sumData, step, submitOrder }) => {
   return (
     <div
       style={{
-        height: "70px",
+        height: "60px",
         color: "#FFD384",
         position: "fixed",
         width: "100%",
@@ -20,21 +20,35 @@ const Footer = ({ itemCart, onCheckout, sumData }) => {
         alignItems: "center"
       }}
     >
-      <Button
-        style={{
-          width: "90%",
-          textAlign: "left",
-          backgroundColor: "#83633f",
-          color: "white",
-          height: "45px"
-        }}
-        onClick={onCheckout}
-      >
-        ตะกร้าสินค้า - {sumData?.amount} ชิ้น{" "}
-        <div style={{ position: "absolute", right: 15, top: 11 }}>
-          ฿{sumData?.price}
-        </div>
-      </Button>
+      {step === 0 ? (
+        <Button
+          style={{
+            width: "90%",
+            textAlign: "left",
+            backgroundColor: "#83633f",
+            color: "white",
+            height: "45px"
+          }}
+          onClick={onCheckout}
+        >
+          ตะกร้าสินค้า - {sumData?.amount} ชิ้น{" "}
+          <div style={{ position: "absolute", right: 15, top: 11 }}>
+            ฿{sumData?.price}
+          </div>
+        </Button>
+      ) : (
+        <Button
+          style={{
+            width: "90%",
+            backgroundColor: "#83633f",
+            color: "white",
+            height: "45px"
+          }}
+          onClick={submitOrder}
+        >
+          <center>ยืนยันคำสั่งซื้อ</center>
+        </Button>
+      )}
     </div>
   );
 };

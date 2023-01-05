@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Button, List, Radio, Space, Upload } from "antd";
+import { Card, Row, Col, Button, List, Radio, Space, message } from "antd";
 import {
   getImgProfile,
   getName,
   getSoi,
   getAddress,
-  getLineProfile,
-  sendLiffOrder
+  getLineProfile
 } from "../utils/utility";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  UploadOutlined
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import SaWeiService from "services/SaWeiService";
 import MDItemInfo from "components/Modal/MDItemInfo";
 import MDEditAddress from "components/Modal/MDEditAddress";
+import krungthaiImage from "assets/image/krung-thai.png";
+import promptImage from "assets/image/prompt.png";
 
 const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
-  const [total, setTotal] = useState({});
   const [isOpenModalAddy, setIsOpenModalAddy] = useState(false);
   const [userAddress, setUserAddress] = useState(getLineProfile());
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,14 +23,14 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
   const [cart, setCart] = useState();
   const [currentIdx, setCurrentIdx] = useState();
 
+  useEffect(() => {
+    setCart([...itemCart]);
+  }, [itemCart]);
+
   const onChange = (e) => {
     console.log("radio checked", e.target.value);
     setValue(e.target.value);
   };
-
-  useEffect(() => {
-    setCart([...itemCart]);
-  }, [itemCart]);
 
   const removeItem = (itemIndex) => {
     let nextCart = itemCart.filter((_, index) => itemIndex != index);
@@ -75,11 +71,14 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
       .catch((err) => {});
   };
 
-  const handleSubmitOrder = () => {
-    console.log("CART ==> ", itemCart);
-    console.log("ADDRESS ==> ", userAddress);
-
-    sendLiffOrder(itemCart);
+  const handleCopyData = (text) => {
+    var dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = text;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+    message.success(`[คัดลอก] เลขบัญชี ${text}`);
   };
 
   const handleSetEdit = (item, index) => {
@@ -125,14 +124,7 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
   const handleUpdateCart = (data) => {
     let nextCart = [...itemCart];
     nextCart[currentIdx] = data;
-    // let result = [...itemCart].map((item) =>
-    //   data?._id === item?._id ? data : item
-    // );
-
-    // console.log(result);
-
     setItemCart(mergeItem(nextCart));
-
     setIsModalOpen(false);
   };
 
@@ -307,48 +299,84 @@ const UICart = ({ itemCart, setItemCart, onBack, sumData }) => {
 
           <Card style={{ marginTop: "1rem" }}>
             <h4 style={{ margin: "5px 0px", fontSize: "16px" }}>
-              วิธีชำระเงิน
+              ช่องทางการชำระเงิน
             </h4>
             <Radio.Group onChange={onChange} value={value}>
               <Space direction="vertical">
-                <Radio value={1}>เงินสด</Radio>
-                <Radio value={2}>
-                  โอนจ่าย{" "}
-                  {value == 2 ? (
-                    <Upload name="slip" action="/upload.do" listType="picture">
-                      <Button icon={<UploadOutlined />}>แนบสลิป</Button>
-                    </Upload>
-                  ) : null}
-                </Radio>
+                <Radio value={1}>เงินสด </Radio>
+                <Radio value={2}>พร้อมเพย์ / ธนาคาร</Radio>
               </Space>
             </Radio.Group>
-          </Card>
-        </div>
 
-        <div
-          style={{
-            height: "70px",
-            width: "95%",
-            color: "#FFD384",
-            position: "fixed",
-            bottom: 0,
-            zIndex: 100,
-            background: "white",
-            display: "block"
-          }}
-        >
-          <Button
-            style={{
-              width: "100%",
-              textAlign: "left",
-              backgroundColor: "#83633f",
-              color: "white",
-              height: "45px"
-            }}
-            onClick={handleSubmitOrder}
-          >
-            <center>ยืนยันคำสั่งซื้อ</center>
-          </Button>
+            {value === 2 && (
+              <div>
+                <Card
+                  style={{
+                    marginTop: "10px",
+                    borderRadius: "10px",
+                    backgroundColor: "#023d6a"
+                  }}
+                >
+                  <Row gutter={[16, 8]}>
+                    <Col span={6}>
+                      <center style={{ paddingTop: "5px" }}>
+                        <img src={promptImage} width="50px" height="auto" />
+                      </center>
+                    </Col>
+                    <Col span={18} style={{ color: "white", fontSize: "14px" }}>
+                      <h4 style={{ fontSize: "16px", margin: 0 }}>พร้อมเพย์</h4>
+                      <div>เลขที่บัญชี : 0807350067</div>
+                      <div>กมลกรณ์ ใจเย็น</div>
+                    </Col>
+                    <Col span={24} style={{ color: "white" }}>
+                      <center>
+                        <Button
+                          style={{ width: "95%" }}
+                          onClick={() => handleCopyData("0807350067")}
+                        >
+                          คัดลอกเลขบัญชี
+                        </Button>
+                      </center>
+                    </Col>
+                  </Row>
+                </Card>
+
+                <Card
+                  style={{
+                    marginTop: "10px",
+                    borderRadius: "10px",
+                    backgroundColor: "#049cda",
+                    minHeight: "120px"
+                  }}
+                >
+                  <Row gutter={[16, 8]}>
+                    <Col span={6}>
+                      <center style={{ paddingTop: "5px" }}>
+                        <img src={krungthaiImage} width="50px" height="auto" />
+                      </center>
+                    </Col>
+                    <Col span={18} style={{ color: "white", fontSize: "14px" }}>
+                      <h4 style={{ fontSize: "16px", margin: 0 }}>
+                        ธนาคารกรุงไทย
+                      </h4>
+                      <div>เลขที่บัญชี : 2720244392</div>
+                      <div>กมลกรณ์ ใจเย็น</div>
+                    </Col>
+                    <Col span={24} style={{ color: "white" }}>
+                      <center>
+                        <Button
+                          style={{ width: "95%" }}
+                          onClick={() => handleCopyData("2720244392")}
+                        >
+                          คัดลอกเลขบัญชี
+                        </Button>
+                      </center>
+                    </Col>
+                  </Row>
+                </Card>
+              </div>
+            )}
+          </Card>
         </div>
       </div>
 
