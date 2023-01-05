@@ -50,11 +50,11 @@ export const setLiffMessageOrder = (
   return str;
 };
 
-export const setOrderData = (itemInCart) => {
+export const setOrderData = (itemCart) => {
   let obj = [];
 
-  for (let i = 0; i < itemInCart.length; i++) {
-    const item = itemInCart[i];
+  for (let i = 0; i < itemCart.length; i++) {
+    const item = itemCart[i];
 
     obj.push({
       menu_id: item._id,
