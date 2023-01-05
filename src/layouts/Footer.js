@@ -8,7 +8,7 @@ const Footer = ({ onCheckout, sumData, step, submitOrder }) => {
   return (
     <div
       style={{
-        height: "60px",
+        height: "70px",
         color: "#FFD384",
         position: "fixed",
         width: "100%",
