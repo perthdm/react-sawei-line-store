@@ -15,12 +15,12 @@ const Header = ({ step, onBack }) => {
         color: "white",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       {step === 1 && (
         <LeftOutlined
-          style={{ position: "absolute", left: "1rem", top: "1.1rem" }}
+          style={{ position: "absolute", left: "3.5%", top: "2.25%" }}
           onClick={onBack}
         />
       )}

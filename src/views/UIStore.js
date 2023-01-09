@@ -71,11 +71,11 @@ const UIStore = ({ itemCart, setItemCart }) => {
   };
 
   return (
-    <>
-      <Row gutter={[16, 16]}>
+    <div style={{padding: "0rem 1.15%"}}>
+      <Row gutter={[12, 16]}>
         {itemList?.map((item, idx) => {
           return (
-            <Col lg={4} xs={12} key={item + "-" + idx}>
+            <Col lg={4} md={8} xs={12} key={item + "-" + idx}>
               <Card
                 hoverable
                 style={{ width: "100%" }}
@@ -111,7 +111,7 @@ const UIStore = ({ itemCart, setItemCart }) => {
           onSubmit={handleSubmit}
         />
       )}
-    </>
+    </div>
   );
 };
 
