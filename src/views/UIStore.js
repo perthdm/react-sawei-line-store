@@ -18,6 +18,9 @@ const UIStore = ({ itemCart, setItemCart }) => {
         data.sort((a, b) => {
           return b["is_active"] - a["is_active"];
         });
+        data.sort((a, b) => {
+          return b["recommended"] - a["recommended"];
+        });
         setItemList(data);
       }
     };
@@ -71,7 +74,7 @@ const UIStore = ({ itemCart, setItemCart }) => {
   };
 
   return (
-    <div style={{padding: "0rem 1.15%"}}>
+    <div style={{ padding: "0rem 1.15%" }}>
       <Row gutter={[12, 16]}>
         {itemList?.map((item, idx) => {
           return (
@@ -80,16 +83,41 @@ const UIStore = ({ itemCart, setItemCart }) => {
                 hoverable
                 style={{ width: "100%" }}
                 cover={
-                  <img
-                    alt="example"
-                    src={item?.img_url}
-                    style={{
-                      height: "200px",
-                      filter: item?.is_active
-                        ? "grayscale(0%)"
-                        : "grayscale(100%)"
-                    }}
-                  />
+                  <>
+                    <img
+                      alt="example"
+                      src={item?.img_url}
+                      style={{
+                        height: "200px",
+                        filter: item?.is_active
+                          ? "grayscale(0%)"
+                          : "grayscale(100%)",
+                      }}
+                    />
+                    {/* recommended */}
+                    {item?.recommended && (
+                      <div
+                        style={{
+                          width: "60px",
+                          height: "25px",
+                          background: "#d4380d",
+                          position: "absolute",
+                          right: "5px",
+                          top: "5px",
+                          borderRadius: "100px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          color: "white",
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                          border: "2px solid white",
+                        }}
+                      >
+                        แนะนำ
+                      </div>
+                    )}
+                  </>
                 }
                 onClick={() => handleSelected(item)}
               >
