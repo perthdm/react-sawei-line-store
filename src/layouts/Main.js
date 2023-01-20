@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import Footer from "./Footer";
-import Content from "./Content";
+import { Route, Routes } from "react-router-dom";
 import Header from "./Header";
-import { Button } from "antd";
+import Content from "./Content";
+import UIStoreWrapper from "views/UIStoreWrapper";
+import UIHistory from "views/UIHistory";
 
 const Main = () => {
   const [step, setStep] = useState(0);
@@ -18,7 +19,21 @@ const Main = () => {
   return (
     <div style={{ height: "100vh" }}>
       <Header step={step} onBack={handleBack} />
-      <Content step={step} onBack={handleBack} onCheckout={handleCheckout} />
+      <Content>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <UIStoreWrapper
+                step={step}
+                onBack={handleBack}
+                onCheckout={handleCheckout}
+              />
+            }
+          />
+          <Route path="/order-history" element={<UIHistory />} />
+        </Routes>
+      </Content>
     </div>
   );
 };

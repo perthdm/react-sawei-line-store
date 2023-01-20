@@ -47,9 +47,15 @@ const App = () => {
       console.log("signup response ----> ", response);
 
       const { address, _id } = response.data;
+      const nextData = { _id, soi: "empty", ads: "empty" };
 
-      setStorage("soi", address?.soi ? address?.soi : "empty");
-      setStorage("address", address?.address ? address?.address : "empty");
+      if (address) {
+        nextData["soi"] = address?.soi ? address?.soi : "empty";
+        nextData["ads"] = address?.address ? address?.address : "empty";
+      }
+
+      setStorage("soi", nextData.soi);
+      setStorage("ads", nextData.ads);
       setStorage("_id", _id);
     }
   };

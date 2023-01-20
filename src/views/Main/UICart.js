@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Button, List, Radio, Space, message } from "antd";
-import { getLineProfile, setStorage } from "../utils/utility";
+import { getLineProfile, setStorage } from "../../utils/utility";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import SaWeiService from "services/SaWeiService";
 import MDItemInfo from "components/Modal/MDItemInfo";
