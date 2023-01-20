@@ -21,8 +21,9 @@ const Main = () => {
       <Header step={step} onBack={handleBack} />
       <Content>
         <Routes>
+          <Route path="/" element={<></>} />
           <Route
-            path="/"
+            path="/store"
             element={
               <UIStoreWrapper
                 step={step}
