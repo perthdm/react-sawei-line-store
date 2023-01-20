@@ -7,8 +7,8 @@ const liff = window.liff;
 
 const App = () => {
   useEffect(() => {
-    // fetchLiff();
-    // signUp();
+    fetchLiff();
+    signUp();
   }, []);
 
   const fetchLiff = async () => {
@@ -19,7 +19,6 @@ const App = () => {
     if (liff.isLoggedIn()) {
       // liff.logout();
       let line_profile = await liff.getProfile();
-
       if (line_profile) {
         console.log("Profile -----> ", line_profile);
 
