@@ -15,12 +15,14 @@ const UIStore = ({ itemCart, setItemCart }) => {
       const response = await SaWeiService.getMenues();
       if (response?.status === 200) {
         let { data } = response;
-        data.sort((a, b) => {
-          return b["is_active"] - a["is_active"];
-        });
+        
         data.sort((a, b) => {
           return b["recommended"] - a["recommended"];
         });
+        data.sort((a, b) => {
+          return b["is_active"] - a["is_active"];
+        });
+
         setItemList(data);
       }
     };
