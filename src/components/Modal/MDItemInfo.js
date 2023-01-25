@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Modal, Button, List, Radio, Space, Input } from "antd";
+import React, { useState } from "react";
+import { Row, Col, Modal, Button, Radio, Space, Input } from "antd";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 

@@ -7,6 +7,7 @@ import MDItemInfo from "components/Modal/MDItemInfo";
 import MDEditAddress from "components/Modal/MDEditAddress";
 import krungthaiImage from "assets/image/krung-thai.png";
 import promptImage from "assets/image/prompt.png";
+import Swal from "sweetalert2";
 
 const UICart = ({
   itemCart,
@@ -14,7 +15,7 @@ const UICart = ({
   onBack,
   sumData,
   payment,
-  setPayment,
+  setPayment
 }) => {
   const [isOpenModalAddy, setIsOpenModalAddy] = useState(false);
   const [profile, setProfile] = useState(getLineProfile());
@@ -54,24 +55,27 @@ const UICart = ({
     let { name, value } = event.target;
     setProfile((prevState) => ({
       ...prevState,
-      delivery_to: { ...prevState.delivery_to, [name]: value },
+      delivery_to: { ...prevState.delivery_to, [name]: value }
     }));
   };
 
   const handleUpdateAddress = () => {
     let reqData = {
       customer_id: profile?._id,
-      ...profile?.delivery_to,
+      ...profile?.delivery_to
     };
     console.log("user address -----> ", profile);
 
     SaWeiService.updateAddress(reqData)
-      .then((res) => {
+      .then(() => {
         setStorage("soi", reqData.soi);
         setStorage("address", reqData.address);
         setIsOpenModalAddy(false);
+        Swal.fire("สำเร็จ", "บันทึกข้อมูลจัดส่งเรียบร้อยแล้ว", "success");
       })
-      .catch((err) => {});
+      .catch(() => {
+        Swal.fire("ผิดพลาด", "ไม่สามารถบันทึกข้อมูลจัดส่งได้", "error");
+      });
   };
 
   const handleCopyData = (text) => {
@@ -142,7 +146,7 @@ const UICart = ({
             style={{
               backgroundColor: "#87735d",
               borderRadius: "10px",
-              padding: "10px",
+              padding: "10px"
             }}
           >
             <Row gutter={[16, 16]}>
@@ -155,7 +159,7 @@ const UICart = ({
                   position: "absolute",
                   right: 10,
                   top: 10,
-                  backgroundColor: "tan",
+                  backgroundColor: "tan"
                 }}
                 icon={<EditOutlined />}
                 onClick={() => setIsOpenModalAddy(true)}
@@ -170,7 +174,7 @@ const UICart = ({
                       height: "100px",
                       backgroundPosition: "center",
                       border: "1px solid white",
-                      borderRadius: "8px",
+                      borderRadius: "8px"
                     }}
                   />
                 </center>
@@ -180,7 +184,7 @@ const UICart = ({
                 style={{
                   color: "white",
                   paddingLeft: "1.5rem",
-                  fontSize: "16px",
+                  fontSize: "16px"
                 }}
               >
                 <h5
@@ -190,7 +194,7 @@ const UICart = ({
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    width: "180px",
+                    width: "180px"
                   }}
                 >
                   Line:{" "}
@@ -254,10 +258,10 @@ const UICart = ({
                         color: "white",
                         backgroundColor: "#e15a5a",
                         borderColor: "#e15a5a",
-                        marginRight: "-8px",
+                        marginRight: "-8px"
                       }}
                       icon={<DeleteOutlined />}
-                    />,
+                    />
                   ]}
                 >
                   <List.Item.Meta
@@ -300,7 +304,7 @@ const UICart = ({
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px",
+                  fontSize: "15px"
                 }}
               >
                 ทั้งหมด
@@ -312,7 +316,7 @@ const UICart = ({
                   color: "#83633f",
                   fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "15px",
+                  fontSize: "15px"
                 }}
               >
                 ฿{sumData?.price}
@@ -337,7 +341,7 @@ const UICart = ({
                   style={{
                     marginTop: "10px",
                     borderRadius: "10px",
-                    backgroundColor: "#023d6a",
+                    backgroundColor: "#023d6a"
                   }}
                 >
                   <Row gutter={[16, 8]}>
@@ -369,7 +373,7 @@ const UICart = ({
                     marginTop: "10px",
                     borderRadius: "10px",
                     backgroundColor: "#049cda",
-                    minHeight: "120px",
+                    minHeight: "120px"
                   }}
                 >
                   <Row gutter={[16, 8]}>

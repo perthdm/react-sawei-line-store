@@ -7,6 +7,7 @@ const MDEditAddress = ({ isOpen, onClose, usAddress, onChange, onSubmit }) => {
       title="แก้ไขที่ขจัดส่ง"
       open={isOpen}
       onCancel={onClose}
+      maskClosable={false}
       footer={[
         <Button
           style={{
